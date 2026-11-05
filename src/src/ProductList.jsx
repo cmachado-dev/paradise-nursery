@@ -1,0 +1,142 @@
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addItem } from './CartSlice';
+import CartItem from './CartItem';
+import './App.css';
+
+function ProductList({ onHomeClick }) {
+  const [showCart, setShowCart] = useState(false);
+  const [addedToCart, setAddedToCart] = useState({});
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
+
+  const calculateTotalQuantity = () => {
+    return cartItems ? cartItems.reduce((total, item) => total + item.quantity, 0) : 0;
+  };
+
+  const plantsArray = [
+    {
+      category: "Air Purifying Plants",
+      plants: [
+        { name: "Snake Plant", image: "https://cdn.pixabay.com/photo/2021/01/22/06/04/snake-plant-5939187_1280.jpg", description: "Produces oxygen at night, improving air quality.", cost: "$15" },
+        { name: "Spider Plant", image: "https://cdn.pixabay.com/photo/2018/07/11/06/47/chlorophytum-3530413_1280.jpg", description: "Filters formaldehyde and xylene from the air.", cost: "$12" },
+        { name: "Peace Lily", image: "https://cdn.pixabay.com/photo/2019/06/12/14/14/peace-lilies-4269365_1280.jpg", description: "Removes mold spores and purifies the air.", cost: "$18" },
+        { name: "Boston Fern", image: "https://cdn.pixabay.com/photo/2020/04/30/19/52/boston-fern-5114414_1280.jpg", description: "Adds humidity to the air and removes toxins.", cost: "$20" },
+        { name: "Rubber Plant", image: "https://cdn.pixabay.com/photo/2020/02/15/11/49/flower-4850729_1280.jpg", description: "Easy to care for and effective at removing toxins.", cost: "$17" },
+        { name: "Aloe Vera", image: "https://cdn.pixabay.com/photo/2018/04/02/07/42/leaf-3283175_1280.jpg", description: "Purifies the air and has healing properties for skin.", cost: "$14" }
+      ]
+    },
+    {
+      category: "Aromatic Fragrant Plants",
+      plants: [
+        { name: "Lavender", image: "https://images.unsplash.com/photo-1611909023032-2d6b3134ecba?q=80&w=1074&auto=format&fit=crop", description: "Calming scent, used in aromatherapy.", cost: "$20" },
+        { name: "Jasmine", image: "https://images.unsplash.com/photo-1592729645009-b96d1e63d14b?q=80&w=1170&auto=format&fit=crop", description: "Sweet fragrance, promotes relaxation.", cost: "$18" },
+        { name: "Rosemary", image: "https://cdn.pixabay.com/photo/2019/10/11/07/12/rosemary-4541241_1280.jpg", description: "Invigorating scent, often used in cooking.", cost: "$15" },
+        { name: "Mint", image: "https://cdn.pixabay.com/photo/2016/01/07/18/16/mint-1126282_1280.jpg", description: "Refreshing aroma, used in teas and cooking.", cost: "$12" },
+        { name: "Lemon Balm", image: "https://cdn.pixabay.com/photo/2019/09/16/07/41/balm-4480134_1280.jpg", description: "Citrusy scent, relieves stress and promotes sleep.", cost: "$14" },
+        { name: "Hyacinth", image: "https://cdn.pixabay.com/photo/2019/04/07/20/20/hyacinth-4110726_1280.jpg", description: "Hyacinth is a beautiful flowering plant known for its fragrant.", cost: "$22" }
+      ]
+    },
+    {
+      category: "Insect Repellent Plants",
+      plants: [
+        { name: "Oregano", image: "https://cdn.pixabay.com/photo/2015/05/30/21/20/oregano-790702_1280.jpg", description: "Contains compounds that can deter certain insects.", cost: "$10" },
+        { name: "Marigold", image: "https://cdn.pixabay.com/photo/2022/02/22/05/45/marigold-7028063_1280.jpg", description: "Natural insect repellent, also adds color to the garden.", cost: "$8" },
+        { name: "Geraniums", image: "https://cdn.pixabay.com/photo/2012/04/26/21/51/flowerpot-43270_1280.jpg", description: "Known for their insect-repelling properties while adding a pleasant scent.", cost: "$20" },
+        { name: "Basil", image: "https://cdn.pixabay.com/photo/2016/07/24/20/48/tulsi-1539181_1280.jpg", description: "Repels flies and mosquitoes, also used in cooking.", cost: "$9" },
+        { name: "Catnip", image: "https://cdn.pixabay.com/photo/2015/07/02/21/55/cat-829681_1280.jpg", description: "Repels mosquitoes and attracts cats.", cost: "$13" },
+        { name: "Citronella", image: "https://cdn.pixabay.com/photo/2018/05/19/18/54/lemongrass-3414074_1280.jpg", description: "Natural mosquito repellent with a fresh lemon scent.", cost: "$16" }
+      ]
+    }
+  ];
+
+  const handleAddToCart = (product) => {
+    dispatch(addItem(product));
+    setAddedToCart((prevState) => ({
+      ...prevState,
+      [product.name]: true,
+    }));
+  };
+
+  const handleCartClick = (e) => {
+    e.preventDefault();
+    setShowCart(true);
+  };
+
+  const handlePlantsClick = (e) => {
+    e.preventDefault();
+    setShowCart(false);
+  };
+
+  const handleContinueShopping = (e) => {
+    e.preventDefault();
+    setShowCart(false);
+  };
+
+  return (
+    <div>
+      {/* Barra de Navegação */}
+      <div className="navbar" style={{ backgroundColor: '#4CAF50', color: '#fff', padding: '15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="luxury">
+          <a href="/" onClick={(e) => { e.preventDefault(); onHomeClick(); }} style={{ color: 'white', textDecoration: 'none' }}>
+            <div>
+              <h3>Paradise Nursery</h3>
+              <i>Where Green Meets Serenity</i>
+            </div>
+          </a>
+        </div>
+        <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
+          <a href="#" onClick={(e) => { e.preventDefault(); onHomeClick(); }} style={{ color: 'white', fontSize: '20px', textDecoration: 'none' }}>Home</a>
+          <a href="#" onClick={handlePlantsClick} style={{ color: 'white', fontSize: '20px', textDecoration: 'none' }}>Plants</a>
+          <a href="#" onClick={handleCartClick} style={{ color: 'white', fontSize: '20px', textDecoration: 'none' }}>
+            <h1 className="cart" style={{ margin: 0, fontSize: '24px' }}>
+              🛒 <span>{calculateTotalQuantity()}</span>
+            </h1>
+          </a>
+        </div>
+      </div>
+
+      {/* Exibição condicional entre Catálogo de Plantas e Carrinho */}
+      {!showCart ? (
+        <div className="product-grid" style={{ padding: '20px' }}>
+          {plantsArray.map((category, index) => (
+            <div key={index}>
+              <h1 style={{ textAlign: 'center', margin: '20px 0' }}>
+                <div>{category.category}</div>
+              </h1>
+              <div className="product-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'center' }}>
+                {category.plants.map((plant, plantIndex) => (
+                  <div className="product-card" key={plantIndex} style={{ border: '1px solid #ccc', borderRadius: '8px', padding: '15px', width: '250px', textAlign: 'center' }}>
+                    <img className="product-image" src={plant.image} alt={plant.name} style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '4px' }} />
+                    <div className="product-title" style={{ fontWeight: 'bold', fontSize: '1.2rem', margin: '10px 0' }}>{plant.name}</div>
+                    <div className="product-description" style={{ fontSize: '0.9rem', color: '#555', marginBottom: '10px' }}>{plant.description}</div>
+                    <div className="product-cost" style={{ color: '#2e7d32', fontWeight: 'bold', marginBottom: '10px' }}>{plant.cost}</div>
+                    <button
+                      className={`product-button ${addedToCart[plant.name] ? 'added-to-cart' : ''}`}
+                      disabled={!!addedToCart[plant.name]}
+                      onClick={() => handleAddToCart(plant)}
+                      style={{
+                        padding: '10px 15px',
+                        backgroundColor: addedToCart[plant.name] ? '#ccc' : '#4CAF50',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: addedToCart[plant.name] ? 'not-allowed' : 'pointer'
+                      }}
+                    >
+                      {addedToCart[plant.name] ? 'Added to Cart' : 'Add to Cart'}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <CartItem onContinueShopping={handleContinueShopping} />
+      )}
+    </div>
+  );
+}
+
+export default ProductList;
